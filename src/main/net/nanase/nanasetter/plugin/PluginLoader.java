@@ -25,36 +25,41 @@
 package net.nanase.nanasetter.plugin;
 
 import net.nanase.nanasetter.twitter.TwitterList;
+import net.nanase.nanasetter.window.dialog.Dialog;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 /**
  * Project: Nanasetter
- * Created by nanase on 14/05/24.
+ * Created by nanase on 14/07/30.
  */
 
-/**
- * タイムラインの読み取り、リストの読み取り、ツイートの表示などの機能を提供するクラスです。
- *
- * @author Tomona Nanase
- * @since Nanasetter 0.1
- */
-public class ReadRESTPorter extends Porter {
-    /**
-     * Twitter リストとプラグインホストを指定して新しい ReadREST クラスのインスタンスを初期化します。
-     *
-     * @param twitterList Twitter リストを表す TwitterList オブジェクト。
-     * @param pluginHost  プラグインホストを表す PluginHost オブジェクト。
-     * @throws UnsatisfiedPermissionException プラグインで指定されていないパーミッションが要求されました。
-     */
-    ReadRESTPorter(TwitterList twitterList, PluginHost pluginHost)
-            throws UnsatisfiedPermissionException {
-        super(twitterList, pluginHost);
+public class PluginLoader {
+    private final List<PluginHost> pluginHosts;
+
+    private final Logger logger;
+
+    public PluginLoader(Dialog dialog, Logger logger) {
+        this.pluginHosts = new ArrayList<>();
+        this.logger = logger;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected PluginPermission getPermission() {
-        return PluginPermission.READ_REST;
+    public Logger getLogger() {
+        return this.logger;
+    }
+
+    public List<PluginHost> getPluginHosts() {
+        return this.pluginHosts;
+    }
+
+    public void loadPlugin(String directory, Dialog dialog, TwitterList twitterList) {
+        // stub
     }
 }

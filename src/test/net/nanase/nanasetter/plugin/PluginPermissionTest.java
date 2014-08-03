@@ -35,6 +35,7 @@ import java.util.EnumSet;
 
 import static net.nanase.nanasetter.plugin.PluginPermission.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class PluginPermissionTest {
 
@@ -57,6 +58,27 @@ public class PluginPermissionTest {
         assertEquals("config", CONFIGURE.getShortName());
         assertEquals("directMessage", ACCESS_DIRECT_MESSAGE.getShortName());
         assertEquals("risk", RISK.getShortName());
+    }
+
+    @Test
+    public void testParseSet() throws Exception {
+        JSObject jsObject = (JSObject) webEngine.executeScript(
+                "([{ permission: 'full' }," +
+                        "{ permission: 'none' }," +
+                        "{ permission: 'foo' }])");
+
+        assertEquals(FULL, parse((JSObject) jsObject.getSlot(0)));
+        assertEquals(NONE, parse((JSObject) jsObject.getSlot(1)));
+
+        // illegal
+        try {
+            parse((JSObject) jsObject.getSlot(2));
+            fail();
+        } catch (IllegalArgumentException e) {
+            //
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     @Test
@@ -135,5 +157,38 @@ public class PluginPermissionTest {
         assertEquals(EnumSet.of(CONFIGURE, ACCESS_DIRECT_MESSAGE), parse((JSObject) jsObject_long.getSlot(4)));
         assertEquals(EnumSet.of(ACCESS_DIRECT_MESSAGE, RISK), parse((JSObject) jsObject_long.getSlot(5)));
         assertEquals(EnumSet.of(RISK, READ_REST), parse((JSObject) jsObject_long.getSlot(6)));
+    }
+
+    @Test
+    public void testParseFailure() throws Exception {
+        JSObject jsObject_wrongName = (JSObject) webEngine.executeScript(
+                "([{ permission: ['read'] }, { permission: ['read', 'rest'] }])");
+
+        try {
+            parse(null);
+            fail();
+        } catch (IllegalArgumentException e) {
+            //
+        } catch (Exception e) {
+            fail();
+        }
+
+        try {
+            parse((JSObject) jsObject_wrongName.getSlot(0));
+            fail();
+        } catch (IllegalArgumentException e) {
+            //
+        } catch (Exception e) {
+            fail();
+        }
+
+        try {
+            parse((JSObject) jsObject_wrongName.getSlot(1));
+            fail();
+        } catch (IllegalArgumentException e) {
+            //
+        } catch (Exception e) {
+            fail();
+        }
     }
 }
